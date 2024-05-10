@@ -7,7 +7,8 @@ import clsx from "clsx";
 
 export default function ChatListUser() {
   const { chat_with: chatWithUser, auth } = usePage().props;
-  const { data: users } = usePage().props.users;
+  const {  users } = usePage().props;
+  console.log('first', users)
 
   return (
     <>
@@ -33,7 +34,7 @@ export default function ChatListUser() {
             <Link
               preserveScroll
               key={user.uuid}
-              href={route("chat.show", user.uuid)}
+              href=""
               className={clsx(
                 user.id === chatWithUser?.id
                   ? "bg-gray-800"
