@@ -11,7 +11,7 @@ class Message extends Model
     use HasFactory;
 
     protected $fillable = [
-        "sender_id", "receiver_id", "content"
+        "sender_id", "receiver_id", "content", "deleted_at"
     ];
 
     public function sender(): BelongsTo
