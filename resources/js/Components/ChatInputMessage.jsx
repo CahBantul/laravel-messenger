@@ -37,6 +37,9 @@ export default function ChatInputMessage(props) {
         props.setIsTyping(false);
       },
       preserveScroll: true,
+      headers: {
+        "X-Socket-Id": Echo.socketId(),
+      }
     });
   }
 
