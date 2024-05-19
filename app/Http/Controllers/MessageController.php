@@ -12,6 +12,7 @@ class MessageController extends Controller
 {
     public function index(): Response
     {
+        // dd($this->getUser()->toArray());
         return inertia('Chat/Index', [
             "users" => $this->getUser()
         ]);
@@ -69,7 +70,39 @@ class MessageController extends Controller
     private function getUser()
     {
         return User::query()
-                ->where('id', '!=', auth()->user()->id)
+                ->whereHas('sendMessage', function ($query) {
+                    $query->where('receiver_id', auth()->user()->id);
+                })
+                ->orWhereHas('receiveMessage', function ($query) {
+                    $query->where('sender_id', auth()->user()->id);
+                })
+                ->withCount(['sendMessage' => fn($query) => $query->where('receiver_id', auth()->id())->whereNull('seen_at')])
+                ->with([
+                    'sendMessage' => function ($query) {
+                        $query->whereIn('id', function ($query) {
+                            $query->selectRaw('max(id)')
+                                ->from('messages')
+                                ->where('receiver_id', auth()->id())
+                                ->groupBy('sender_id');
+                        });
+                    },
+                    'receiveMessage' => function ($query) {
+                        $query->whereIn('id', function ($query) {
+                            $query->selectRaw('max(id)')
+                                ->from('messages')
+                                ->where('sender_id', auth()->id())
+                                ->groupBy('receiver_id');
+                        });
+                    },
+                ])
+                ->orderByDesc(function ($query) {
+                    $query->select('created_at')
+                        ->from('messages')
+                        ->whereColumn('sender_id', 'users.id')
+                        ->orWhereColumn('receiver_id', 'users.id')
+                        ->orderByDesc('created_at')
+                        ->limit(1);
+                })
                 ->get();
     }
 }

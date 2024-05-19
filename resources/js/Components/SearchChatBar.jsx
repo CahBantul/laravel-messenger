@@ -20,10 +20,10 @@ export default function SearchChatBar() {
       await axios("/api/users/search", {
         method: "GET",
         params: {
-          q: query,
+          query: query,
         },
       }).then((res) => {
-        setUsers(res?.data?.data);
+        setUsers(res?.data?.users);
         setLoading(false);
       });
     }, 500),
@@ -192,7 +192,7 @@ export default function SearchChatBar() {
                                 }}
                                 href={route(
                                   "chat.show",
-                                  user.uuid
+                                  user.id
                                 )}
                                 className="flex-auto ml-3 truncate"
                               >

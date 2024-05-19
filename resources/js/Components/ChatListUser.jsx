@@ -15,11 +15,11 @@ export default function ChatListUser() {
         {users.map((user) => {
           let chat = null;
           const receiveMessage =
-            user?.receive_messages?.length > 0 &&
-            user?.receive_messages[0];
+            user?.receive_message?.length > 0 &&
+            user?.receive_message[0];
           const sendMessage =
-            user?.send_messages?.length > 0 &&
-            user?.send_messages[0];
+            user?.send_message?.length > 0 &&
+            user?.send_message[0];
 
           if (receiveMessage && sendMessage)
             chat =
@@ -97,9 +97,9 @@ export default function ChatListUser() {
                       </div>
                     )}
                   </div>
-                  {user.messages_count > 0 && (
+                  {user.send_message_count > 0 && (
                     <div className="inline-flex items-center px-1.5 rounded-full text-[10px] bg-purple-500 text-white">
-                      {user.messages_count}
+                      {user.send_message_count}
                     </div>
                   )}
                 </div>
