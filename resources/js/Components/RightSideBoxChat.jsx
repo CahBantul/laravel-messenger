@@ -17,7 +17,7 @@ export default function RightSideBoxChat({ message, isFirstMessage, replyHandleS
               <div className="max-w-full px-2 py-1.5 mb-1.5 bg-gray-700/50 border-gray-600 border-l-4 rounded">
                 <div className="text-[10px] lg:text-xs">
                   <div className="mb-1 text-purple-400">
-                    {message.reply.sender_id === auth.user.id ? 'You' : message.reply.sender_name}
+                    {message.reply.sender_id === auth.user.uuid ? 'You' : message.reply.sender_name}
                   </div>
                   {!message.reply.deleted_at ? (
                     <div className="overflow-hidden text-gray-300/80" style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical" }}>

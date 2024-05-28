@@ -32,10 +32,10 @@ export default function ChatListUser() {
           return (
             <Link
               preserveScroll
-              key={user.id}
+              key={user.uuid}
               href={route('chat.show', user)}
               className={clsx(
-                user.id === chatWithUser?.id
+                user.uuid === chatWithUser?.uuid
                   ? "bg-gray-800"
                   : "bg-transparent",
                 "flex w-full items-center hover:bg-gray-800/60 px-2.5 py-3 rounded-md"
@@ -56,7 +56,7 @@ export default function ChatListUser() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center text-xs text-gray-400">
                     <div>
-                      {chat?.sender_id === auth.user.id &&
+                      {chat?.sender_id === auth.user.uuid &&
                         !chat?.message_deleted_at && (
                           <svg
                             xmlns="http://www.w3.org/2000/svg"

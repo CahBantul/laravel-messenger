@@ -158,7 +158,7 @@ export default function SearchChatBar() {
                     <ul className="text-sm text-gray-700">
                       {users.map((user) => (
                         <Combobox.Option
-                          key={user.id}
+                          key={user.uuid}
                           value={user}
                           className={({ active }) =>
                             clsx(
@@ -192,7 +192,7 @@ export default function SearchChatBar() {
                                 }}
                                 href={route(
                                   "chat.show",
-                                  user.id
+                                  user.uuid
                                 )}
                                 className="flex-auto ml-3 truncate"
                               >

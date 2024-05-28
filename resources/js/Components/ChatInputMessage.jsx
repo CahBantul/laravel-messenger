@@ -29,17 +29,17 @@ export default function ChatInputMessage(props) {
 
   const submitHandler = (e) => {
     e.preventDefault();
-    post(route('chat.store', chatWithUser.id), {
-      onStart: () => {
-        reset();
-        e.target.style.height = 'auto';
-        props.setReply(null);
-        props.setIsTyping(false);
-      },
-      preserveScroll: true,
-      headers: {
-        "X-Socket-Id": Echo.socketId(),
-      }
+    post(route("chat.store", chatWithUser.uuid), {
+        onStart: () => {
+            reset();
+            e.target.style.height = "auto";
+            props.setReply(null);
+            props.setIsTyping(false);
+        },
+        preserveScroll: true,
+        headers: {
+            "X-Socket-Id": Echo.socketId(),
+        },
     });
   }
 

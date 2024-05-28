@@ -44,12 +44,12 @@ class MessageController extends Controller
     {
         /** @var User $authUser */
         $authUser = auth()->user();
-        $authUser->sendMessage()->create([
+        $message = $authUser->sendMessage()->create([
             "content" => $request->message,
             "receiver_id" => $user->id,
         ]);
 
-        broadcast(new MessageSent($request->message))->toOthers();
+        broadcast(new MessageSent($message->load('receiver')))->toOthers();
 
         return back();
     }

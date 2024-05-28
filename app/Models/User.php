@@ -46,6 +46,15 @@ class User extends Authenticatable
         ];
     }
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($user) {
+            $user->uuid = str()->uuid();
+        });
+    }
+
     public function sendMessage() : HasMany
     {
         return $this->hasMany(Message::class, 'sender_id', 'id');

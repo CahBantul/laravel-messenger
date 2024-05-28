@@ -25,8 +25,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::get('/chats', [MessageController::class, 'index'])->name('chat.index');
-    Route::post('/chats/{user}', [MessageController::class, 'store'])->name('chat.store');
-    Route::get('/chats/{user}', [MessageController::class, 'show'])->name('chat.show');
+    Route::post('/chats/{user:uuid}', [MessageController::class, 'store'])->name('chat.store');
+    Route::get('/chats/{user:uuid}', [MessageController::class, 'show'])->name('chat.show');
     Route::delete('/chats/{message}', [MessageController::class, 'destroy'])->name('chat.destroy');
 });
 

@@ -11,10 +11,10 @@ export default function ({ children }) {
     const { auth } = usePage().props;
 
     useEffect(() => {
-        Echo.channel("message-sent-channel").listen("MessageSent", (e) => {
+        Echo.private("message-sent-channel." + auth.user.uuid).listen("MessageSent", (e) => {
             router.reload({
                 preserveScroll : true,
-                only: ["messages"]
+                only: ["messages", "users"]
             })
         });
     }, []);
