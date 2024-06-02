@@ -20,6 +20,9 @@ class MessageController extends Controller
 
     public function show(User $user): Response
     {
+        $chats = $user->sendMessage()->where('receiver_id', auth()->user()->id)->whereNull('seen_at')->get();
+        $chats->each->update(['seen_at' => now()]);
+
         return inertia('Chat/Show', [
             "chat_with" => $user,
             "messages" => Message::query()

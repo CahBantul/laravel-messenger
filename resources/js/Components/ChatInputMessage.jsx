@@ -45,6 +45,7 @@ export default function ChatInputMessage(props) {
 
   const onTyping = () => {
     setTimeout(() => {
+        Echo.private(`message-sent-channel.${chatWithUser.uuid}`).whisper('typing');
     }, 300)
   }
 

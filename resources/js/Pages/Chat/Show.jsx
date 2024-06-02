@@ -26,6 +26,14 @@ export default function Show() {
     scrollRef.current?.scrollTo(0, scrollRef.current?.scrollHeight)
   }, [messages, reply])
 
+Echo.private(`message-sent-channel.${auth.user.uuid}`).listenForWhisper('typing', () => {
+    setIsTyping(true)
+
+    setTimeout(() => {
+      setIsTyping(false)
+    }, 2000)
+})
+
   const renderMessage = (messages, auth) => {
     return messages.map((date) => (
       <Fragment key={date.date}>
