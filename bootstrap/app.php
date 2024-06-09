@@ -18,7 +18,10 @@ return Application::configure(basePath: dirname(__DIR__))
             \Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets::class,
         ]);
 
-        //
+        // middleware aliases
+        $middleware->alias([
+            'user.last_seen_at' => \App\Http\Middleware\UpdateLastSeenAt::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

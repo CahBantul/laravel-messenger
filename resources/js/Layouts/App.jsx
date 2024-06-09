@@ -1,6 +1,6 @@
 //resources\js\Layouts\App.jsx
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import MineProfileChat from "@/Components/MineProfileChat.jsx";
 import SearchChatBar from "@/Components/SearchChatBar.jsx";
 import ChatListUser from "@/Components/ChatListUser.jsx";
@@ -9,14 +9,23 @@ import { router } from "@inertiajs/react";
 
 export default function ({ children }) {
     const { auth } = usePage().props;
+    const [onlineUsers, setOnlineUsers] = useState([]);
 
     useEffect(() => {
-        Echo.private("message-sent-channel." + auth.user.uuid).listen("MessageSent", (e) => {
-            router.reload({
-                preserveScroll : true,
-                only: ["messages", "users"]
-            })
-        });
+        Echo.private("message-sent-channel." + auth.user.uuid).listen(
+            "MessageSent",
+            (e) => {
+                router.reload({
+                    preserveScroll: true,
+                    only: ["messages", "users"],
+                });
+            }
+        );
+
+        Echo.join("online-users")
+            .here((user) => setOnlineUsers(user))
+            .joining((user) => setOnlineUsers((users) => [...users, user]))
+            .leaving((user) => setOnlineUsers((prev) => prev.filter((u) => u.uuid !== user.uuid)));
     }, []);
 
     const renderSidebarScreen = () => {
@@ -42,7 +51,7 @@ export default function ({ children }) {
                                 <ChatListUser />
                             </div>
 
-                            {children}
+                            {React.cloneElement(children, { onlineUsers })}
                         </div>
                     </div>
                 </div>

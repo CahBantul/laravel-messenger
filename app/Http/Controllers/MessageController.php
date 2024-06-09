@@ -22,9 +22,16 @@ class MessageController extends Controller
     {
         $chats = $user->sendMessage()->where('receiver_id', auth()->user()->id)->whereNull('seen_at')->get();
         $chats->each->update(['seen_at' => now()]);
+        $last_seen = $user->last_seen_at;
+        $last_seen_at = $last_seen->isToday() ? "last seen today at " . $last_seen->format('H:i') : ($last_seen->isYesterday() ? "last seen yesterday " . $last_seen->format('H:i') : "last seen at " . $last_seen->format('d/m/Y H:i'));
 
         return inertia('Chat/Show', [
-            "chat_with" => $user,
+            "chat_with" => [
+                'id' => $user->id,
+                'uuid' => $user->uuid,
+                'name' => $user->name,
+                'last_seen_at' => $last_seen_at,
+            ],
             "messages" => Message::query()
                 ->where(fn ($q) => $q->where('sender_id', auth()->user()->id)->where('receiver_id', $user->id))
                 ->orWhere(fn ($q) => $q->where('sender_id', $user->id)->where('receiver_id', auth()->user()->id))
@@ -73,39 +80,39 @@ class MessageController extends Controller
     private function getUser()
     {
         return User::query()
-                ->whereHas('sendMessage', function ($query) {
-                    $query->where('receiver_id', auth()->user()->id);
-                })
-                ->orWhereHas('receiveMessage', function ($query) {
-                    $query->where('sender_id', auth()->user()->id);
-                })
-                ->withCount(['sendMessage' => fn($query) => $query->where('receiver_id', auth()->id())->whereNull('seen_at')])
-                ->with([
-                    'sendMessage' => function ($query) {
-                        $query->whereIn('id', function ($query) {
-                            $query->selectRaw('max(id)')
-                                ->from('messages')
-                                ->where('receiver_id', auth()->id())
-                                ->groupBy('sender_id');
-                        });
-                    },
-                    'receiveMessage' => function ($query) {
-                        $query->whereIn('id', function ($query) {
-                            $query->selectRaw('max(id)')
-                                ->from('messages')
-                                ->where('sender_id', auth()->id())
-                                ->groupBy('receiver_id');
-                        });
-                    },
-                ])
-                ->orderByDesc(function ($query) {
-                    $query->select('created_at')
-                        ->from('messages')
-                        ->whereColumn('sender_id', 'users.id')
-                        ->orWhereColumn('receiver_id', 'users.id')
-                        ->orderByDesc('created_at')
-                        ->limit(1);
-                })
-                ->get();
+            ->whereHas('sendMessage', function ($query) {
+                $query->where('receiver_id', auth()->user()->id);
+            })
+            ->orWhereHas('receiveMessage', function ($query) {
+                $query->where('sender_id', auth()->user()->id);
+            })
+            ->withCount(['sendMessage' => fn ($query) => $query->where('receiver_id', auth()->id())->whereNull('seen_at')])
+            ->with([
+                'sendMessage' => function ($query) {
+                    $query->whereIn('id', function ($query) {
+                        $query->selectRaw('max(id)')
+                            ->from('messages')
+                            ->where('receiver_id', auth()->id())
+                            ->groupBy('sender_id');
+                    });
+                },
+                'receiveMessage' => function ($query) {
+                    $query->whereIn('id', function ($query) {
+                        $query->selectRaw('max(id)')
+                            ->from('messages')
+                            ->where('sender_id', auth()->id())
+                            ->groupBy('receiver_id');
+                    });
+                },
+            ])
+            ->orderByDesc(function ($query) {
+                $query->select('created_at')
+                    ->from('messages')
+                    ->whereColumn('sender_id', 'users.id')
+                    ->orWhereColumn('receiver_id', 'users.id')
+                    ->orderByDesc('created_at')
+                    ->limit(1);
+            })
+            ->get();
     }
 }
