@@ -29,7 +29,7 @@ class MessageController extends Controller
 
         $unseenMessages->each->update(['seen_at' => now()]);
 
-        $lastSeenAt = $this->formatLastSeen($user->last_seen_at);
+        $lastSeenAt = $user->last_seen_at ? $this->formatLastSeen($user->last_seen_at) : null;
 
         $messages = Message::query()
             ->where(fn ($q) => $q->where('sender_id', $authUserId)->where('receiver_id', $user->id))
