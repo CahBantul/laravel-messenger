@@ -5,16 +5,16 @@ namespace App\Http\Controllers;
 use App\Events\MessageSent;
 use App\Models\Message;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Inertia\Response;
-use Carbon\Carbon;
 
 class MessageController extends Controller
 {
     public function index(): Response
     {
         return inertia('Chat/Index', [
-            'users' => $this->getUsers()
+            'users' => $this->getUsers(),
         ]);
     }
 
@@ -38,7 +38,7 @@ class MessageController extends Controller
             ->groupBy(fn ($message) => $this->formatMessageDate($message->created_at))
             ->map(fn ($messages, $date) => [
                 'messages' => $messages,
-                'date' => $date
+                'date' => $date,
             ])->values();
 
         return inertia('Chat/Show', [
@@ -49,7 +49,7 @@ class MessageController extends Controller
                 'last_seen_at' => $lastSeenAt,
             ],
             'messages' => $messages,
-            'users' => $this->getUsers()
+            'users' => $this->getUsers(),
         ]);
     }
 
@@ -115,14 +115,14 @@ class MessageController extends Controller
     private function formatLastSeen(Carbon $lastSeen): string
     {
         if ($lastSeen->isToday()) {
-            return 'last seen today at ' . $lastSeen->format('H:i');
+            return 'last seen today at '.$lastSeen->format('H:i');
         }
 
         if ($lastSeen->isYesterday()) {
-            return 'last seen yesterday at ' . $lastSeen->format('H:i');
+            return 'last seen yesterday at '.$lastSeen->format('H:i');
         }
 
-        return 'last seen at ' . $lastSeen->format('d/m/Y H:i');
+        return 'last seen at '.$lastSeen->format('d/m/Y H:i');
     }
 
     private function formatMessageDate(Carbon $date): string

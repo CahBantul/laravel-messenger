@@ -21,7 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'last_seen_at'
+        'last_seen_at',
     ];
 
     /**
@@ -57,12 +57,12 @@ class User extends Authenticatable
         });
     }
 
-    public function sendMessage() : HasMany
+    public function sendMessage(): HasMany
     {
         return $this->hasMany(Message::class, 'sender_id', 'id');
     }
 
-    public function receiveMessage() : HasMany
+    public function receiveMessage(): HasMany
     {
         return $this->hasMany(Message::class, 'receiver_id', 'id');
     }

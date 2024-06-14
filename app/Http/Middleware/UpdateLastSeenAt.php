@@ -17,9 +17,9 @@ class UpdateLastSeenAt
     {
         /** @var User $authUser */
         $authUser = auth()->user();
-        if(auth()->check()){
+        if (auth()->check()) {
             $authUser->update([
-                "last_seen_at" => now()
+                'last_seen_at' => now(),
             ]);
         }
 

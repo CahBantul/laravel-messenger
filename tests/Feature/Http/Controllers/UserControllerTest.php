@@ -8,7 +8,7 @@ it('can search users', function () {
     $user = User::where('email', 'programmer@telo.com')->first();
 
     $response = $this
-                ->getJson('/api/users/search?query=telo');
+        ->getJson('/api/users/search?query=telo');
 
     $response->assertJsonCount(1, 'users')
         ->assertJson(['users' => [['name' => $user->name]]]);
